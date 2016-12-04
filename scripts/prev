@@ -1,0 +1,4 @@
+#!/bin/bash
+#gmusicbrowser -cmd NextSong >/dev/null 2>&1
+/home/lucas/bin/player/spotify-control.sh prev >/dev/null 2>&1
+/home/lucas/bin/player/gmusicbrowser-control.sh prev >/dev/null 2>&1

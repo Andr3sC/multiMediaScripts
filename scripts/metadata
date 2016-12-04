@@ -1,0 +1,57 @@
+#!/bin/bash
+FICH=/tmp/metadata.$$
+FICH2=/tmp/metadata2.$$
+FICH3=/tmp/metadata3.$$
+/home/lucas/bin/player/spotify-control.sh getStatus 1> /dev/null 2>&1
+ESTADO_SPOTIFY=$?
+/home/lucas/bin/player/gmusicbrowser-control.sh getStatus 1> /dev/null 2>&1
+ESTADO_GMUSIC=$?
+####echo "SPO [$ESTADO_SPOTIFY] GM[$ESTADO_GMUSIC]"
+if [ "0" -eq "$ESTADO_SPOTIFY" ]
+then
+  #wget -O $FICH3 `/home/lucas/bin/player/spotify-control.sh getArtUrl` 2> /dev/null
+  curl -L `/home/lucas/bin/player/spotify-control.sh getArtUrl` > $FICH3  2> /dev/null
+fi
+if [ "0" -eq "$ESTADO_GMUSIC" ]
+then
+  FILE_GM=`/home/lucas/bin/player/gmusicbrowser-control.sh getArtUrl`
+  GM_FILE=`echo $FILE_GM | sed 's,file:..,,g' |  sed 's,+, ,g;s,%,\\\\x,g' | xargs -0 printf "%b"`
+  cp "$GM_FILE" "$FICH3"
+  ###echo "[       $GM_FILE]"
+  ###echo "[$FILE_GM]"
+fi
+echo '          <b>Title:</b>' > $FICH
+if [ "0" -eq "$ESTADO_SPOTIFY" ]
+then
+  /home/lucas/bin/player/spotify-control.sh getTitle  | grep -v " is not running" >> $FICH
+fi
+if [ "0" -eq "$ESTADO_GMUSIC" ]
+then
+  /home/lucas/bin/player/gmusicbrowser-control.sh getTitle | grep -v " is not running" >> $FICH
+fi
+echo "          <b>Album:</b>" >> $FICH
+if [ "0" -eq "$ESTADO_SPOTIFY" ]
+then
+  /home/lucas/bin/player/spotify-control.sh getAlbum | grep -v " is not running" >> $FICH
+fi
+if [ "0" -eq "$ESTADO_GMUSIC" ]
+then
+  /home/lucas/bin/player/gmusicbrowser-control.sh getAlbum | grep -v " is not running" >> $FICH
+fi
+echo "          <b>Artist:</b>" >> $FICH
+if [ "0" -eq "$ESTADO_SPOTIFY" ]
+then
+  /home/lucas/bin/player/spotify-control.sh getArtist | grep -v " is not running" >> $FICH
+fi
+if [ "0" -eq "$ESTADO_GMUSIC" ]
+then
+  /home/lucas/bin/player/gmusicbrowser-control.sh getArtist | grep -v " is not running" >> $FICH
+fi
+#######echo $GM_FILE >> $FICH
+sed 's,&,&amp;,g' $FICH > $FICH2
+###zenity --info --text="`cat $FICH2`" --timeout=10
+########cat $FICH2
+yad --image $FICH3 --text="`cat $FICH2`" --text-align=right --undecorated --button=gtk-ok:1 --timeout=10 --timeout-indicator=top
+rm $FICH
+rm $FICH2
+rm $FICH3

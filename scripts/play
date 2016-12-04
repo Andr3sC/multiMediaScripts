@@ -1,0 +1,4 @@
+#!/bin/bash
+#gmusicbrowser -cmd PlayPause > /dev/null 2>&1
+/home/lucas/bin/player/spotify-control.sh play > /dev/null 2>&1 
+/home/lucas/bin/player/gmusicbrowser-control.sh play > /dev/null 2>&1 

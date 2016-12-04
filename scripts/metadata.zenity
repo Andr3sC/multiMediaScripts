@@ -1,0 +1,20 @@
+#!/bin/bash
+FICH=/tmp/metadata.$$
+FICH2=/tmp/metadata2.$$
+URL=`/home/lucas/bin/player/spotify-control.sh getArtUrl` 
+wget -q -O - $URL | display -resize 150x150 - &
+DISPLAY_PID=$!
+echo '          <b>Title:</b>' > $FICH
+/home/lucas/bin/player/spotify-control.sh getTitle  | grep -v " is not running" >> $FICH
+/home/lucas/bin/player/gmusicbrowser-control.sh getTitle | grep -v " is not running" >> $FICH
+echo "          <b>Album:</b>" >> $FICH
+/home/lucas/bin/player/spotify-control.sh getAlbum | grep -v " is not running" >> $FICH
+/home/lucas/bin/player/gmusicbrowser-control.sh getAlbum | grep -v " is not running" >> $FICH
+echo "          <b>Artist:</b>" >> $FICH
+/home/lucas/bin/player/spotify-control.sh getArtist | grep -v " is not running" >> $FICH
+/home/lucas/bin/player/gmusicbrowser-control.sh getArtist | grep -v " is not running" >> $FICH
+sed -e 's!&!&amp;!g' $FICH > $FICH2
+zenity --info --text="`cat $FICH2`" --timeout=10
+kill $DISPLAY_PID
+rm $FICH
+rm $FICH2

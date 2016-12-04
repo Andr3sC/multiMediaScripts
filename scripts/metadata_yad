@@ -1,0 +1,20 @@
+#!/bin/bash
+FICH=/tmp/metadata.$$
+FICH2=/tmp/metadata2.$$
+FICH3=/tmp/metadata3.$$
+URL=`/home/lucas/bin/player/spotify-control.sh getArtUrl` 
+wget -q -O $FICH3 $URL 
+echo '          <b>Title:</b>' > $FICH
+/home/lucas/bin/player/spotify-control.sh getTitle  | grep -v " is not running" >> $FICH
+/home/lucas/bin/player/gmusicbrowser-control.sh getTitle | grep -v " is not running" >> $FICH
+echo "          <b>Album:</b>" >> $FICH
+/home/lucas/bin/player/spotify-control.sh getAlbum | grep -v " is not running" >> $FICH
+/home/lucas/bin/player/gmusicbrowser-control.sh getAlbum | grep -v " is not running" >> $FICH
+echo "          <b>Artist:</b>" >> $FICH
+/home/lucas/bin/player/spotify-control.sh getArtist | grep -v " is not running" >> $FICH
+/home/lucas/bin/player/gmusicbrowser-control.sh getArtist | grep -v " is not running" >> $FICH
+sed -e 's!&!&amp;!g' $FICH > $FICH2
+yad --text="`cat $FICH2`" --text-align=right --image=$FICH3 --timeout=10 --title="MetaData" --timeout-indicator=right --no-buttons
+rm $FICH
+rm $FICH2
+rm $FICH3
