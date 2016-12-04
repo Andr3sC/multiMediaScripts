@@ -9,6 +9,8 @@ The idea is to define hot-keys against the scripts in order to invoke them.
 
 My current confinguration is:
 
+|Key|What|
+|---|---|
 |Super-U|gmusicBrowser|
 |Ctrl-Super-U|spotify|
 |Super-j|Next Song|
